@@ -29,6 +29,3 @@ series: function [
     do foreach [range word] reverse ranges [body: compose/deep layer]
 	result
 ]
-
-; a: [5 6 7]
-; print equal? probe series/only [reduce [a-elem] for a-elem in a] [[5] [6] [7]]
