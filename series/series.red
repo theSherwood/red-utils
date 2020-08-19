@@ -1,4 +1,6 @@
-Red []
+Red [
+	Author: Adam Sherwood
+]
 
 series: function [
     "Series comprehension"
