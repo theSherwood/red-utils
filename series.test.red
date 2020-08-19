@@ -14,7 +14,6 @@ suite "block series, no index, 1 for, no if" [
 		assert equal? series/only [reduce [a-elem] for a-elem in a] [[5] [6] [7]]
 		unset 'a
 	]
-
 	test "series inlined" [
 		assert equal? series [a-elem for a-elem in [5 6 7]] [5 6 7]
 		assert equal? series/into [a-elem for a-elem in [5 6 7]] "" "567"
@@ -32,7 +31,6 @@ suite "block series, with index, 1 for, no if" [
 		assert equal? series/only [reduce [a-elem a-idx] for a-elem a-idx in a] [[5 1] [6 2] [7 3]]
 		unset 'a
 	]
-
 	test "series inlined" [
 		assert equal? series [rejoin [a-elem a-idx] for a-elem a-idx in [5 6 7]] ["51" "62" "73"]
 		assert equal? series/into [rejoin [a-elem a-idx] for a-elem a-idx in [5 6 7]] "" "516273"
@@ -50,7 +48,6 @@ suite "string series, no index, 1 for, no if" [
 		assert equal? series/into/only [reduce [a-elem] for a-elem in a] [] [[#"a"] [#"b"] [#"c"]]
 		unset 'a
 	]
-
 	test "series inlined" [
 		assert equal? series [a-elem for a-elem in "abc"] "abc"
 		assert equal? series/into [a-elem for a-elem in "abc"] [] [#"a" #"b" #"c"]
@@ -69,7 +66,6 @@ suite "string series, with index, 1 for, no if" [
 			[[#"a" 1] [#"b" 2] [#"c" 3]]
 		unset 'a
 	]
-
 	test "series inlined" [
 		assert equal? series [rejoin [a-elem a-idx] for a-elem a-idx in "abc"] "a1b2c3"
 		assert equal? series/into [rejoin [a-elem a-idx] for a-elem a-idx in "abc"] [] ["a1" "b2" "c3"]
@@ -120,10 +116,63 @@ suite "2 for" [
 	]
 ]
 
-; TODO: add more tests, particularly for pulling multiple items as in foreach
+suite "for by 2" [
+	test "simple" [
+		a: [5 6 7 8]
+		b: "abcdefghijklmno"
+		assert equal? series [a1 * a2 for [a1 a2] in a] [30 56]
+		assert equal? series [rejoin ["." b1 b2 b3] for [b1 b2 b3] in b] ".abc.def.ghi.jkl.mno"
+		unset [a b]
+	]
+	test "with index" [
+		a: [5 6 7 8]
+		b: "abcdefghijklmno"
+		assert equal? series [a1 * a2 + a-idx for [a1 a2] a-idx in a] [32 60]
+		assert equal? series [rejoin [b1 b2 b3 b-idx] for [b1 b2 b3] b-idx in b]
+			"abc3def6ghi9jkl12mno15"
+		unset [a b]
+	]
+	test "with index, if clause" [
+		a: [5 6 7 8]
+		b: "abcdefghijklmno"
+		assert equal? series [
+			a1 * a2 + a-idx
+			for [a1 a2] a-idx in a
+			if a1 * a2 > 40
+		] [60]
+		assert equal? series [
+			rejoin [b1 b2 b3 b-idx]
+			for [b1 b2 b3] b-idx in b
+			if even? b-idx
+		] "def6jkl12"
+		unset [a b]
+	]
+]
 
-; series [rejoin [i * 2 j] for i in a for j in b if even? i and char? j]
-; probe series [rejoin [i * 2 j] for i in a for j in b if even? i]
-; probe series [rejoin [i * 2 j] for i in [ 1 2 3 4 ] for j in "string" if even? i]
-; probe series [rejoin [i * 2 j] for j in b for i in [ 1 2 3 4 ] if even? i]
-; probe series/into [rejoin [i * 2 "." i-idx j-idx "." j] for j j-idx in b for i i-idx in [ 1 2 3 4 ] if even? i] []
+suite "complex - all the fixin's" [
+	test "mixed series, with index, if clause" [
+		a: [5 6 7 8]
+		b: "abcdefghijklmno"
+		c: [12 13 14]
+		assert equal? series [
+			rejoin [(a1 * a2 + b-idx) b2]
+			for [a1 a2] a-idx in a
+			for [b1 b2 b3] b-idx in b
+			if even? a1 * b-idx
+		] ["36e" "42k" "62e" "68k"]
+		assert equal? series/into [
+			rejoin [(a1 * a2 + b-idx) b2]
+			for [a1 a2] a-idx in a
+			for [b1 b2 b3] b-idx in b
+			if even? a1 * b-idx
+		] "" "36e42k62e68k"
+		; assert equal? series [
+		; 	rejoin [b1 b2 b3 b-idx]
+		; 	for [b1 b2 b3] b-idx in b
+		; 	for [a1 a2] a-idx in a
+		; 	for c c-idx in c
+		; 	if even? b-idx
+		; ] "def6jkl12"
+		unset [a b c]
+	]
+]

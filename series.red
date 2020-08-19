@@ -20,8 +20,8 @@ series: function [
     body: compose/deep [(any [clause 'do]) [(pick [append/only append] only) result (expression)]]
     layer: [
 		(if idx: word/2 [compose [(to-set-word idx) 0]])
-		foreach (word/1) (range) [
-			(if idx [compose [(to-set-word idx) (idx) + 1]])
+		foreach [(word/1)] (range) [
+			(if idx [compose [(to-set-word idx) (idx) + (either block? word/1 [length? word/1][1])]])
 			(body)
 		]
 	]
