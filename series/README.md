@@ -1,6 +1,8 @@
 # Series Comprehensions
 
-Inspired by List Comprehensions in Python
+**Inspired by List Comprehensions in Python**
+
+This code makes liberal use of Vladimir Vasilyev's list comprehension demo at https://stackoverflow.com/questions/59706298/a-compiler-for-list-comprehension-in-rebol. Much of the code is, in fact, his. I simply made a few adjustments to support indices, an output buffer, and some minor syntactic changes.
 
 ## Grammar
 
@@ -112,4 +114,4 @@ series/only/into [
 
 ## Acknowledgements
 
-This makes liberal use of Vladimir Vasilyev's list comprehension demo at https://stackoverflow.com/questions/59706298/a-compiler-for-list-comprehension-in-rebol. Mutch of the code is, in fact, his. I simply made a few adjustments to support indices and minor syntactic changes.
+This code makes liberal use of Vladimir Vasilyev's list comprehension demo at https://stackoverflow.com/questions/59706298/a-compiler-for-list-comprehension-in-rebol. Much of the code is, in fact, his. I simply made a few adjustments to support indices, an output buffer, and some minor syntactic changes.

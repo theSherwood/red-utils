@@ -1,8 +1,7 @@
 Red [
 	author: [@theSherwood "Adam Sherwood"]
 	notes: {
-		Credit to Vladimir Vasilyev @9214
-		https://stackoverflow.com/questions/59706298/a-compiler-for-list-comprehension-in-rebol
+		This code makes liberal use of Vladimir Vasilyev's list comprehension demo at https://stackoverflow.com/questions/59706298/a-compiler-for-list-comprehension-in-rebol. Much of the code is, in fact, his. I simply made a few adjustments to support indices, an output buffer, and some minor syntactic changes.
 	}
 ]
 
