@@ -6,24 +6,24 @@ Red [
 ]
 
 series: function [
-    "Series comprehension"
-    spec [block!]
-    /only
+	"Series comprehension"
+	spec [block!]
+	/only
 	/into
 	buffer [series!]
 ][
-    #1
-    set-builder: [collect [expression collect some generator predicate]]
-    expression:  [keep to 'for]
+	#1
+	set-builder: [collect [expression collect some generator predicate]]
+	expression:  [keep to 'for]
 	generator:   ['for keep copy words to 'in 'in keep copy range to [ 'for | 'if | end ]]
-    predicate:   [keep to end]
+	predicate:   [keep to end]
 
-    set [expression ranges: clause:] parse spec set-builder
+	set [expression ranges: clause:] parse spec set-builder
 
-    #2
+	#2
 	result: either into [buffer][to type? do ranges/2 []]
-    body: compose/deep [(any [clause 'do]) [(pick [append/only append] only) result (expression)]]
-    layer: [
+	body: compose/deep [(any [clause 'do]) [(pick [append/only append] only) result (expression)]]
+	layer: [
 		(if idx: words/2 [compose [(to-set-word idx) 0]])
 		foreach [(words/1)] (range) [
 			(if idx [compose [
@@ -33,6 +33,6 @@ series: function [
 		]
 	]
 
-    do foreach [range words] reverse ranges [body: compose/deep layer]
+	do foreach [range words] reverse ranges [body: compose/deep layer]
 	result
 ]
