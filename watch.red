@@ -1,9 +1,7 @@
 Red []
 
-watch: func [spec [block!]][
-	action: get spec/action
-
-	watcher: make object! [
+watch: function [dir action interval][
+	watcher: context [
 		watched-files: []
 
 		join-path: func [base path][
@@ -42,15 +40,12 @@ watch: func [spec [block!]][
 		]
 	]
 
-	dir: normalize-dir spec/dir
+	dir: normalize-dir dir
 
 	watcher/collect-files/top dir copy []
 
 	forever [
-		wait spec/interval
+		wait interval
 		watcher/collect-files/top dir copy []
 	]
 ]
-
-a: func [f][print f]
-watch [dir: %. action: a interval: 1]
