@@ -44,12 +44,22 @@ context [
 		probe normalize-paths file relative-paths
 	]
 
-	set 'watch-deps func [][
+	set 'watch-deps func [
+		dir
+		ignore
+		/interval
+			num
+	][
 		action: func [f][
 			find-dependencies f
 		]
-		watch %. :action 1
+		either interval [
+			watch/ignore/interval dir :action :ignore num
+		][
+			watch/ignore dir :action :ignore
+		]
 	]
 ]
 
-watch-deps
+ignore: func [r f][#"." = first r]
+watch-deps %. :ignore

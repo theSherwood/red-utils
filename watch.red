@@ -1,6 +1,13 @@
 Red []
 
-watch: function [dir action interval][
+watch: function [
+	dir 
+	action "Takes 1 arg: the full path of the changed file"
+	/ignore
+		fn "Takes 2 args: relative-path and full-path. Return true to ignore file"
+	/interval
+		num
+][
 	watcher: context [
 		watched-files: []
 
@@ -27,13 +34,13 @@ watch: function [dir action interval][
 		collect-files: func [dir results /top /local contents ts][
 			contents: normalize-paths dir
 			foreach [relative-path full-path] contents [
-				either dir? full-path [
-					if not #"." = first relative-path  [
-						collect-files full-path results
+				if not all [ignore fn relative-path full-path]  [
+					either dir? full-path [
+							collect-files full-path results
+					][
+						append results reduce [full-path ts: query full-path]
+						compare full-path ts
 					]
-				][
-					append results reduce [full-path ts: query full-path]
-					compare full-path ts
 				]
 			]
 			if top [watched-files: results]
@@ -45,7 +52,10 @@ watch: function [dir action interval][
 	watcher/collect-files/top dir copy []
 
 	forever [
-		wait interval
+		wait either interval [num][1]
 		watcher/collect-files/top dir copy []
 	]
 ]
+
+; ignore: func [r f][#"." = first r]
+; watch/ignore %. :print :ignore
