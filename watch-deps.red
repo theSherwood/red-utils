@@ -3,7 +3,7 @@ Red []
 #include %watch.red
 
 context [
-	dependencies: make hash! []
+	dependencies: #()
 
 	ends-with: function [str sub-str] [
 		parse str [thru sub-str end]
@@ -31,17 +31,44 @@ context [
 		]
 	]
 
-	find-dependencies: function [file][
-		if not ends-with file ".red" [exit]
-
+	parse-dependencies: function [file][
 		content: load file
 
 		rules: [collect [some relative-files]]
 		relative-files: compose [to (to issue! "include") issue! keep file!]
 
-		set 'relative-paths parse content rules
+		normalize-paths file parse content rules
+	]
 
-		probe normalize-paths file relative-paths
+	update-dependencies: function [file deps][
+		foreach d deps [
+			dependents: dependencies/:d
+			either dependents [
+				if not find dependents file [
+					append dependents file
+				]
+			][
+				dependencies/:d: reduce [file]
+			]
+		]
+	]
+
+	traverse-dependencies: function [file affected-files][
+		if not find affected-files file [append affected-files file]
+		dependents: dependencies/:file
+		if dependents [
+			foreach f dependencies/:file [
+				traverse-dependencies f affected-files
+			]
+		]
+		affected-files
+	]
+
+	user-action: func [
+		file
+		changed-dependency
+	][
+		probe [file changed-dependency]
 	]
 
 	set 'watch-deps func [
@@ -51,15 +78,20 @@ context [
 		/interval
 			num
 	][
-		action: func [f][
-			find-dependencies f
+		watch-action: func [file][
+			if not ends-with file ".red" [exit]
+			update-dependencies file parse-dependencies file
+			affected-files: traverse-dependencies file []
+			
+			; probe affected-files
+			probe reduce [dependencies file]
 		]
 
 		case [
-			all [ignore interval]         [watch/ignore/interval dir :action :fn num]
-			all [ignore not interval]     [watch/ignore dir :action :fn]
-			all [not ignore interval]     [watch/interval dir :action num]
-			all [not ignore not interval] [watch dir :action]
+			all [ignore interval]         [watch/ignore/interval dir :watch-action :fn num]
+			all [ignore not interval]     [watch/ignore dir :watch-action :fn]
+			all [not ignore interval]     [watch/interval dir :watch-action num]
+			all [not ignore not interval] [watch dir :watch-action]
 		]
 	]
 ]
