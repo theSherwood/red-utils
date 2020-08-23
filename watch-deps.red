@@ -53,15 +53,16 @@ context [
 		]
 	]
 
-	traverse-dependencies: function [file affected-files][
+	affected-files: copy []
+
+	traverse-dependencies: function [file][
 		if not find affected-files file [append affected-files file]
 		dependents: dependencies/:file
 		if dependents [
 			foreach f dependencies/:file [
-				traverse-dependencies f affected-files
+				traverse-dependencies f
 			]
 		]
-		affected-files
 	]
 
 	set 'watch-deps func [
@@ -72,10 +73,15 @@ context [
 		/interval
 			num [number!] "In seconds, defaults to 1"
 	][
-		watch-action: func [file][
-			if not ends-with file ".red" [exit]
-			update-dependencies file parse-dependencies file
-			affected-files: traverse-dependencies file copy []
+		watch-action: func [changed-files][
+			affected-files: copy []
+			if changed-files [
+				foreach file changed-files [
+					if not ends-with file ".red" [continue]
+					update-dependencies file parse-dependencies file
+					traverse-dependencies file
+				]
+			]
 
 			action affected-files
 		]
