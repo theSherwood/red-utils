@@ -46,20 +46,22 @@ context [
 
 	set 'watch-deps func [
 		dir
-		ignore
+		/ignore
+			fn
 		/interval
 			num
 	][
 		action: func [f][
 			find-dependencies f
 		]
-		either interval [
-			watch/ignore/interval dir :action :ignore num
-		][
-			watch/ignore dir :action :ignore
+
+		case [
+			all [ignore interval]         [watch/ignore/interval dir :action :fn num]
+			all [ignore not interval]     [watch/ignore dir :action :fn]
+			all [not ignore interval]     [watch/interval dir :action num]
+			all [not ignore not interval] [watch dir :action]
 		]
 	]
 ]
 
-ignore: func [r f][#"." = first r]
-watch-deps %. :ignore
+watch-deps %.

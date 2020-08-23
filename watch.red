@@ -8,6 +8,8 @@ watch: function [
 	/interval
 		num
 ][
+	if not ignore [fn: func [r f][#"." = first r]] ; Default: ignore files and dirs that start with `.`
+
 	watcher: context [
 		watched-files: []
 
@@ -56,6 +58,3 @@ watch: function [
 		watcher/collect-files/top dir copy []
 	]
 ]
-
-; ignore: func [r f][#"." = first r]
-; watch/ignore %. :print :ignore
