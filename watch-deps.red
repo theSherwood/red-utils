@@ -64,27 +64,20 @@ context [
 		affected-files
 	]
 
-	user-action: func [
-		file
-		changed-dependency
-	][
-		probe [file changed-dependency]
-	]
-
 	set 'watch-deps func [
-		dir
+		dir [file!]
+		action [function!] "Takes 1 arg: a block of the affected files"
 		/ignore
-			fn
+			fn [function!] "Takes 2 args: relative-path and full-path. Return true to ignore file"
 		/interval
-			num
+			num [number!] "In seconds, defaults to 1"
 	][
 		watch-action: func [file][
 			if not ends-with file ".red" [exit]
 			update-dependencies file parse-dependencies file
-			affected-files: traverse-dependencies file []
-			
-			; probe affected-files
-			probe reduce [dependencies file]
+			affected-files: traverse-dependencies file copy []
+
+			action affected-files
 		]
 
 		case [
@@ -96,4 +89,4 @@ context [
 	]
 ]
 
-watch-deps %.
+watch-deps %. func [affected-files][probe affected-files]

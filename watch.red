@@ -1,12 +1,12 @@
 Red []
 
 watch: function [
-	dir 
-	action "Takes 1 arg: the full path of the changed file"
+	dir [file!]
+	action [function!] "Takes 1 arg: the full path of the changed file"
 	/ignore
-		fn "Takes 2 args: relative-path and full-path. Return true to ignore file"
+		fn [function!] "Takes 2 args: relative-path and full-path. Return true to ignore file"
 	/interval
-		num
+		num [number!] "In seconds, defaults to 1"
 ][
 	if not ignore [fn: func [r f][#"." = first r]] ; Default: ignore files and dirs that start with `.`
 
@@ -36,7 +36,7 @@ watch: function [
 		collect-files: func [dir results /top /local contents ts][
 			contents: normalize-paths dir
 			foreach [relative-path full-path] contents [
-				if not all [ignore fn relative-path full-path]  [
+				if not all [value? 'fn fn relative-path full-path]  [
 					either dir? full-path [
 							collect-files full-path results
 					][
