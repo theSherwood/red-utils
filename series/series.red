@@ -1,5 +1,8 @@
 Red [
 	author: [@theSherwood "Adam Sherwood"]
+	purpose: {
+		Series comprehensions inspired by Python list comprehensions
+	}
 	usage: {
 		; SIMPLE EXAMPLE
 		a: [3 4 5]
