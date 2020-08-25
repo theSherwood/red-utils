@@ -31,7 +31,3 @@ compare: func [body][
 	]
 	return true
 ]
-
-; probe compare [1 < 2 < 3 < 4]    ;== true
-; probe compare [1 < 2 > 3 < 4]    ;== false
-; probe compare [1 + 1 = 2 = 2.0 == to-float "2.0"] ;== true
