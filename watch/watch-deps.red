@@ -1,4 +1,30 @@
-Red []
+Red [
+	author: [@theSherwood "Adam Sherwood"]
+	purpose: {
+		A file watcher that tracks dependencies
+	}
+	license: 'BSD-3
+	usage: {
+		; A basic test-runner that will `do` files ending in ".test.red" 
+		; whenever that file or a dependency of that file is saved
+
+		watch-deps %. func [affected-files][
+			foreach file affected-files [
+				if parse file [thru ".test.red" end][
+					print ""
+					print file
+					print ""
+					do file
+					print ""
+					print "...I'm watching you, Wazowski. Always watching..."
+				]
+			]
+		]
+	}
+	limitations: {
+		Only tracks .red files
+	}
+]
 
 #include %watch.red
 
@@ -15,11 +41,12 @@ context [
 	resolve-relative-path: function [from relative] [
 		base: first split-path from
 		adjusted: case [
-			starts-with relative %../ [copy skip relative 3]
+			starts-with relative %../ [base: first split-path base copy skip relative 3 ]
 			starts-with relative %./  [copy skip relative 2]
 			starts-with relative %/   [return copy relative]
 			true                      [copy relative]
 		]
+
 		to file! rejoin [base adjusted]
 	]
 
@@ -67,11 +94,17 @@ context [
 
 	set 'watch-deps func [
 		dir [file!]
-		action [function!] "Takes 1 arg: a block of the affected files"
+		"The directory to watch"
+		action [function!] 
+		{Triggered when 1 or more files is saved. Takes 1 arg: block of the changed files
+		and any files within `dir` that depend on them.}
 		/ignore
-			fn [function!] "Takes 2 args: relative-path and full-path. Return true to ignore file"
+			fn [function!]
+			{Takes 2 args: relative-path and full-path. Return true to ignore file. By default,
+			files and directories beginning with '.' will be ignored.}
 		/interval
-			num [number!] "In seconds, defaults to 1"
+			num [number!]
+			"Daemon interval in seconds; defaults to 1"
 	][
 		watch-action: func [changed-files][
 			affected-files: copy []
@@ -79,8 +112,8 @@ context [
 				foreach file changed-files [
 					if not ends-with file ".red" [continue]
 					update-dependencies file parse-dependencies file
-					traverse-dependencies file
 				]
+				foreach file changed-files [traverse-dependencies file]
 			]
 
 			action affected-files
@@ -94,5 +127,3 @@ context [
 		]
 	]
 ]
-
-watch-deps %. func [affected-files][probe affected-files]
