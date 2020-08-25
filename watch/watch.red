@@ -21,11 +21,11 @@ watch: function [
 	dir [file!]
 	"The directory to watch"
 	action [function!]
-	"Triggered when 1 or more files is saved. Takes 1 arg: block of the changed files."
+	{Triggered when 1 or more files is saved. Takes 1 arg: block of the changed files.}
 	/ignore
 		fn [function!]
-		"Takes 2 args: relative-path and absolute-path. Return true to ignore file. By default,
-		files and directories beginning with '.' will be ignored."
+		{Takes 2 args: relative-path and absolute-path. Return true to ignore file. By default,
+		files and directories beginning with '.' will be ignored.}
 	/interval
 		num [number!]
 		"Daemon interval in seconds; defaults to 1"

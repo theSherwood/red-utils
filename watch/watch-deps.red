@@ -16,8 +16,10 @@ Red [
 					print ""
 					do file
 					print ""
-					print "...I'm watching you, Wazowski. Always watching..."
 				]
+			]
+			if not zero? length? affected-files [
+				print "...I'm watching you, Wazowski. Always watching..."
 			]
 		]
 	}
@@ -100,8 +102,8 @@ context [
 		and any files within `dir` that depend on them.}
 		/ignore
 			fn [function!]
-			{Takes 2 args: relative-path and full-path. Return true to ignore file. By default,
-			files and directories beginning with '.' will be ignored.}
+			{Takes 2 args: relative-path and absolute-path. Return true to ignore file. 
+			By default, files and directories beginning with '.' will be ignored.}
 		/interval
 			num [number!]
 			"Daemon interval in seconds; defaults to 1"
