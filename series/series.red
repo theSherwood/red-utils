@@ -1,5 +1,27 @@
 Red [
 	author: [@theSherwood "Adam Sherwood"]
+	purpose: {
+		Series comprehensions inspired by Python list comprehensions
+	}
+	usage: {
+		; SIMPLE EXAMPLE
+		a: [3 4 5]
+		series [a' * 2 for a' in a]       ;== [6 8 10]
+
+		; COMPLEX EXAMPLE
+		a: "abcd"
+		b: [3 4 5 6]
+		c: [7 8]
+
+		series/only/into [
+			reduce [a'' b' * a-idx - c']
+			for [a' a''] a-idx in a
+			for [b' b'']       in b
+			for c'       c-idx in c
+			if even? c-idx + b'
+		] []
+		;== [[#"b" -1] [#"b" 3] [#"d" 5] [#"d" 13]]
+	}
 	notes: {
 		This code makes liberal use of Vladimir Vasilyev's list comprehension demo at https://stackoverflow.com/questions/59706298/a-compiler-for-list-comprehension-in-rebol. Much of the code is, in fact, his. I simply made a few adjustments to support indices, an output buffer, and some minor syntactic changes.
 	}
