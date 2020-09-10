@@ -6,7 +6,7 @@ foldl: function [
 	/init
 		initial
 ][
-	either init [accumulator: :initial c: coll][accumulator: coll/1 c: next coll]
+	either init [accumulator: :initial c: coll][accumulator: :coll/1 c: next coll]
 	foreach i c [
 		accumulator: reducer :accumulator :i
 	]
