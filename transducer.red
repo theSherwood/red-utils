@@ -52,9 +52,9 @@ filter: function [predicate][
 ; a: map function [id][id]
 ; b: a :reducer
 
-id: function [id][probe id]
+id: function [id][id]
 add-1: function [n][n + 1]
 add-2: function [n][n + 2]
 
-probe fn: pipe [:id function [n][n + 1] :add-2]
+fn: pipe [:id function [n][n + 1] :add-2]
 probe fn 3
