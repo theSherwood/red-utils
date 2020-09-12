@@ -8,12 +8,12 @@ Red [
 		; EXAMPLE 1
 		; Watches files within `%.` and prints the absolute file name whenever
 		; a file is saved. The daemon loops on a 3 second interval.
-		watch/interval %. print 3
+		watch/interval %. :print 3
 
 		;EXAMPLE 2
 		; Watches files within `%foo` and prints the absolute file name whenever
 		; a file is saved. Ignores all nested directories and their contents.
-		watch/ignore %foo print func[r a][dir? a] 
+		watch/ignore %foo :print func[r a][dir? a] 
 	}
 ]
 
