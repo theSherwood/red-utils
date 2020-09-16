@@ -37,28 +37,46 @@ suite "random-integer" [
 		assert equal? v random-integer/seed seed
 		assert equal? v random-integer/seed seed
 		unset 'v
+		unset 'seed
 	]
 	test "max" [
 		seed: 10
-		assert equal? v: 7740 random-integer/seed/max seed 10000
+		
+		; Inclusive min, exclusive max
+		assert equal? 1 random-integer/seed/max seed 2
+		assert equal? 0 random-integer/seed/max 11 2
+
+		; Consistent when consistently seeded
+		assert equal? v: 7739 random-integer/seed/max seed 10000
 		assert equal? v random-integer/seed/max seed 10000
 		assert equal? v random-integer/seed/max seed 10000
 		assert equal? v random-integer/seed/max seed 10000
+
+		; Inconsistent when not seeded
 		assert not equal? v v': random-integer/max 10000
 		assert not equal? v' random-integer/max 10000
 		unset 'v
+		unset 'seed
 	]
 	test "between" [
 		seed: 10
-		assert equal? v: 77739 random-integer/seed/between seed 10000 100000
-		assert equal? v random-integer/seed/between seed 10000 100000
-		assert equal? v random-integer/seed/between seed 10000 100000
-		assert equal? v random-integer/seed/between seed 10000 100000
-		assert not equal? v v': random-integer/between 10000 100000
-		assert not equal? v' random-integer/between 10000 100000
+
+		; Consistent when consistently seeded
+		assert equal? v: 77739 random-integer/seed/between seed [10000 100000]
+		assert equal? v random-integer/seed/between seed [10000 100000]
+		assert equal? v random-integer/seed/between seed [10000 100000]
+		assert equal? v random-integer/seed/between seed [10000 100000]
+
+		; Inconsistent when not seeded
+		assert not equal? v v': random-integer/between [10000 100000]
+		assert not equal? v' random-integer/between [10000 100000]
 		unset 'v
+		unset 'seed
 	]
 	test "list" [
-		probe random-integer/list [2 5] 10
+		list: random-integer/list [2 5] 100
+		assert equal? 2 min* list
+		assert equal? 4 max* list
+		unset 'list
 	]
 ]

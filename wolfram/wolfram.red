@@ -35,30 +35,44 @@ context [
 ]
 
 context [
+	debugging: false
+	set 'debug-random function [
+		"Provide the random function with a predictable seed (or not)"
+		bool
+	][
+		either bool [previous: 1 debugging: true][previous: get-time debugging: false]
+	]
+
+	; The reseed function gets called at the beginning of every random utility call,
+	; unless that utility is called with '/seed
 	get-time: does [t: now/time/precise t/second]
 	previous: get-time
-	reseed: does [random/seed previous: mod previous * get-time 10000]
+	reseed: does [random/seed previous: either debugging [
+			previous + 1
+		][
+			mod previous * get-time 10000
+		]
+	]
+
 
 	set 'random-integer function [
+		"Default behavior returns a 0 or 1. Automatically seeded."
 		/seed
-			seed-val
+			value "Value for seeding 'random"
 		/max
-			maximum
+			maximum [integer!] "0 (inclusive) to maximum (exclusive)"
 		/between
-			min'
-			max'
+			range [block!] "min (inclusive) to max (exclusive)"
 		/list
-			range'
-			n
+			range' [block!] "min (inclusive) to max (exclusive)"
+			n [integer!] "The length of the list to produce"
 	][
-		either seed [random/seed seed-val][reseed]
+		either seed [random/seed value][reseed]
 		case [
-			max [random maximum]
-			between [min' - 1 + random max' - min']
+			max [-1 + random maximum]
+			between [range/1 - 1 + random range/2 - range/1]
 			list [
-				min'': pick range' 1
-				max'': pick range' 2
-				collect [repeat i n [keep random-integer/between min'' max'']]
+				collect [repeat i n [keep random-integer/between range']]
 			]
 			true [-1 + random 2]
 		]
