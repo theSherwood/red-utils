@@ -36,8 +36,7 @@ suite "random-integer" [
 		assert equal? v random-integer/seed seed
 		assert equal? v random-integer/seed seed
 		assert equal? v random-integer/seed seed
-		unset 'v
-		unset 'seed
+		unset [v seed]
 	]
 	test "max" [
 		seed: 10
@@ -55,8 +54,7 @@ suite "random-integer" [
 		; Inconsistent when not seeded
 		assert not equal? v v': random-integer/max 10000
 		assert not equal? v' random-integer/max 10000
-		unset 'v
-		unset 'seed
+		unset [v seed]
 	]
 	test "between" [
 		seed: 10
@@ -70,13 +68,35 @@ suite "random-integer" [
 		; Inconsistent when not seeded
 		assert not equal? v v': random-integer/between [10000 100000]
 		assert not equal? v' random-integer/between [10000 100000]
-		unset 'v
-		unset 'seed
+		unset [v seed]
 	]
 	test "list" [
 		list: random-integer/list [2 5] 100
 		assert equal? 2 min* list
 		assert equal? 4 max* list
 		unset 'list
+	]
+]
+
+suite "random-logic" [
+	test "plain" [
+		seed: 10
+		seed': 11
+		assert equal? v: false random-logic/seed seed
+		assert equal? v random-logic/seed seed
+		assert equal? v random-logic/seed seed
+		assert equal? v random-logic/seed seed
+		assert equal? v: true random-logic/seed seed'
+		assert equal? v random-logic/seed seed'
+		assert equal? v random-logic/seed seed'
+		assert equal? v random-logic/seed seed'
+		unset [v seed seed']
+	]
+	test "list" [
+		contains: function [series item][to-logic find series item]
+		list: random-logic/list 100
+		assert contains list true
+		assert contains list false
+		unset [contains list]
 	]
 ]

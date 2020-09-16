@@ -54,7 +54,6 @@ context [
 		]
 	]
 
-
 	set 'random-integer function [
 		"Default behavior returns a 0 or 1. Automatically seeded."
 		/seed
@@ -75,6 +74,21 @@ context [
 				collect [repeat i n [keep random-integer/between range']]
 			]
 			true [-1 + random 2]
+		]
+	]
+
+	set 'random-logic function [
+		"Returns true or false. Automatically seeded."
+		/seed
+			value "Value for seeding 'random"
+		/list
+			n [integer!] "The length of the list to produce"
+	][
+		either seed [random/seed value][reseed]
+		either list [
+			collect [repeat i n [keep random-logic]]
+		][
+			to-logic do random/only [true false]
 		]
 	]
 ]
