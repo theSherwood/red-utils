@@ -1,6 +1,6 @@
 Red []
 
-#include %variadic.red
+#include %fn.red
 #include %../test-framework.red
 
 set-test-verbosity 1
