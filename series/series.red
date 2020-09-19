@@ -32,7 +32,7 @@ series: function [
 	spec [block!]
 	/only
 	/into
-	buffer [series!]
+		buffer [series!]
 ][
 	#1
 	set-builder: [collect [expression collect some generator predicate]]
